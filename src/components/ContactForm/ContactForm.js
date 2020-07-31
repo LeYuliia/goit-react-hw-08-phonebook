@@ -5,6 +5,8 @@ import phonebookActions from "../redux/phonebook/phonebook-actions";
 //Styles:
 import "./ContactForm.scss";
 import { Button, Form, Col, Row } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class ContactForm extends Component {
   state = {
@@ -16,14 +18,46 @@ class ContactForm extends Component {
   nameInputId = uuidv4();
   phoneInputId = uuidv4();
   // Функции событий
-  handleChange = ({ target: { name, value } }) => {
+
+  updateContact = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
   };
 
+  existName = (name) => {
+    const { contacts } = this.props;
+    return contacts.find((cnt) => cnt.name === name);
+  };
+
+  existNumber = (number) => {
+    const { contacts } = this.props;
+    return contacts.find((cnt) => cnt.number === number);
+  };
+
   handleSubmit = (event) => {
+    const { name, number } = this.state;
     event.preventDefault();
-    this.props.onSubmit(this.state);
-    this.reset();
+    if (name === "" || number === "") {
+      toast.warn("Please,  fill in all fields", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } else if (this.existName(name)) {
+      toast.info(`Contact with name ${name} is already on your list`, {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } else if (this.existNumber(number)) {
+      toast.info(
+        `Contact with phone number ${number} is already on your list`,
+        {
+          position: "top-center",
+          autoClose: 3000,
+        }
+      );
+    } else {
+      this.props.onSubmit(this.state);
+      this.reset();
+    }
   };
 
   reset = () => {
@@ -36,49 +70,56 @@ class ContactForm extends Component {
   render() {
     const { name, number } = this.state;
     return (
-      <Form className="form">
-        <Row>
-          <Col>
-            <Form.Control
-              className="form__item"
-              type="text"
-              name="name"
-              value={name}
-              id={this.nameInputId}
-              onChange={this.handleChange}
-              placeholder="Contact name:"
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              className="form__item"
-              type="phone"
-              name="number"
-              value={number}
-              id={this.phoneInputId}
-              onChange={this.handleChange}
-              placeholder="Phone number:"
-            />
-          </Col>
-        </Row>
-        <Button
-          size="sm"
-          className="form__submit"
-          type="submit"
-          name="contact"
-          onClick={this.handleSubmit}
-          variant="outline-info"
-        >
-          Add Contact
-        </Button>
-      </Form>
+      <>
+        <Form className="form">
+          <Row>
+            <Col>
+              <Form.Control
+                className="form__item"
+                type="text"
+                name="name"
+                value={name}
+                id={this.nameInputId}
+                onChange={this.updateContact}
+                placeholder="Contact name:"
+              />
+            </Col>
+            <Col>
+              <Form.Control
+                className="form__item"
+                type="phone"
+                name="number"
+                value={number}
+                id={this.phoneInputId}
+                onChange={this.updateContact}
+                placeholder="Phone number:"
+              />
+            </Col>
+          </Row>
+          <Button
+            size="sm"
+            className="form__submit"
+            type="submit"
+            name="contact"
+            onClick={this.handleSubmit}
+            variant="outline-info"
+          >
+            Add Contact
+          </Button>
+        </Form>
+        <ToastContainer />
+      </>
     );
   }
 }
+
+const mapStateToProps = ({ phonebook: { contacts } }) => ({
+  contacts,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   onSubmit: (name, number) =>
     dispatch(phonebookActions.addContact(name, number)),
 });
 
-export default connect(null, mapDispatchToProps)(ContactForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

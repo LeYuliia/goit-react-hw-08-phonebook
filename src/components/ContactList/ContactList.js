@@ -27,8 +27,8 @@ const ContactList = ({ phonebook, onDeleteContact }) => (
 
 const getVisibleContacts = (allContacts, filter) => {
   const normalizedFilter = filter.toLowerCase();
-  return allContacts.filter((contact) =>
-    contact.name.toLowerCase().includes(normalizedFilter)
+  return allContacts.filter(({ name }) =>
+    name.toLowerCase().includes(normalizedFilter)
   );
 };
 

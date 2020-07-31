@@ -4,7 +4,7 @@ import ContactList from "./components/ContactList/ContactList";
 import Filter from "./components/Filter";
 import { connect } from "react-redux";
 
-const App = ({ contacts }) => {
+const App = ({ contacts, filter }) => {
   return (
     <>
       <section className="add-contact">
@@ -13,7 +13,7 @@ const App = ({ contacts }) => {
       </section>
       <section className="contacts">
         <h2 className="title">Contacts</h2>
-        {contacts && contacts.length > 2 && <Filter />}
+        {contacts.length > 2 || filter.length > 0 ? <Filter /> : null}
         <ContactList />
       </section>
     </>
@@ -23,6 +23,7 @@ const App = ({ contacts }) => {
 const mapStateToProps = (state) => {
   return {
     contacts: state.phonebook.contacts,
+    filter: state.phonebook.filter,
   };
 };
 
