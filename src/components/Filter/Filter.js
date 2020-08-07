@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import phonebookActions from "../redux/phonebook/phonebook-actions";
+import { changeFilter } from "../../redux/phonebook/actions";
 //Styles:
 import "./Filter.scss";
 import { InputGroup, FormControl } from "react-bootstrap";
+import selectors from "../../redux/phonebook/selectors";
 
 const Filter = ({ filter, onChange }) => (
   <InputGroup size="sm" className="filter-wrapp">
@@ -15,11 +16,11 @@ const Filter = ({ filter, onChange }) => (
 );
 
 const mapStateToProps = (state) => ({
-  value: state.phonebook.filter,
+  value: selectors.getFilter(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onChange: (e) => dispatch(phonebookActions.changeFilter(e.target.value)),
+  onChange: (e) => dispatch(changeFilter(e.target.value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);

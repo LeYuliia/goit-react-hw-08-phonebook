@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import phonebookActions from "../redux/phonebook/phonebook-actions";
+import { deleteContact } from "../../redux/phonebook/operations";
+import selectors from "../../redux/phonebook/selectors";
 //Styles:
 import "./ContactList.scss";
 import { ListGroup, Button } from "react-bootstrap";
@@ -25,19 +26,12 @@ const ContactList = ({ phonebook, onDeleteContact }) => (
   </ListGroup>
 );
 
-const getVisibleContacts = (allContacts, filter) => {
-  const normalizedFilter = filter.toLowerCase();
-  return allContacts.filter(({ name }) =>
-    name.toLowerCase().includes(normalizedFilter)
-  );
-};
-
-const mapStateToProps = ({ phonebook: { contacts, filter } }) => ({
-  phonebook: getVisibleContacts(contacts, filter),
+const mapStateToProps = (state) => ({
+  phonebook: selectors.getVisibleContacts(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onDeleteContact: (id) => dispatch(phonebookActions.deleteContatc(id)),
+  onDeleteContact: (id) => dispatch(deleteContact(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
