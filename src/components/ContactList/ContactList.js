@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { deleteContact } from "../../redux/phonebook/operations";
-import selectors from "../../redux/phonebook/selectors";
+import PT from "prop-types";
+import { deleteContact } from "../../redux/phonebook/phonebook-operations";
+import selectors from "../../redux/phonebook/phonebook-selectors";
 //Styles:
 import "./ContactList.scss";
 import { ListGroup, Button } from "react-bootstrap";
@@ -33,5 +34,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onDeleteContact: (id) => dispatch(deleteContact(id)),
 });
+
+ContactList.propTypes = {
+  phonebook: PT.array.isRequired,
+  onDeleteContact: PT.func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactList);

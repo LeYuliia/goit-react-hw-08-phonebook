@@ -1,7 +1,8 @@
+@import "../../styles/variables.scss";
 @import "~bootstrap/scss/bootstrap";
 
 .filter-wrapp {
   width: 50%;
   margin: 0 auto;
-  margin-bottom: 20px;
+  margin-bottom: $main-mgn-btm;
 }

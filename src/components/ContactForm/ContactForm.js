@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { connect } from "react-redux";
-import { addContact } from "../../redux/phonebook/operations";
+import PT from "prop-types";
+import { addContact } from "../../redux/phonebook/phonebook-operations";
 //Styles:
 import "./ContactForm.scss";
 import { Button, Form, Col, Row } from "react-bootstrap";
@@ -120,5 +121,12 @@ const mapStateToProps = ({ phonebook: { contacts } }) => ({
 const mapDispatchToProps = (dispatch) => ({
   onSubmit: (name, number) => dispatch(addContact(name, number)),
 });
+
+ContactForm.propTypes = {
+  name: PT.string,
+  number: PT.string,
+  contacts: PT.array.isRequired,
+  onSubmit: PT.func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

@@ -2,14 +2,18 @@
 @import "../../styles/variables.scss";
 @import "~bootstrap/scss/bootstrap";
 
+.login-title {
+  margin-bottom: 50px;
+}
+
 .form {
-  @extand %form-set;
+  @extend %form-set;
 
   &__item {
     margin-bottom: $main-mgn-btm;
   }
 
   &__submit {
-    @extand %button-set;
+    @extend %button-set;
   }
 }

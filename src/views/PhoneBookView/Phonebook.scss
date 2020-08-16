@@ -1,0 +1,19 @@
+.phonebook {
+  padding-bottom: 20px;
+
+  &__form {
+    margin-bottom: 20px;
+  }
+
+  &__contacts {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    background-color: #fff;
+    width: 50%;
+    margin: 0 auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}

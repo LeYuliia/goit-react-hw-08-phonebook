@@ -1,42 +1,69 @@
-import React, { Component } from "react";
-import ContactForm from "./components/ContactForm/ContactForm";
-import ContactList from "./components/ContactList/ContactList";
-import Filter from "./components/Filter";
+import React, { Component, Suspense, lazy } from "react";
+import { Switch } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchContact } from "./redux/phonebook/operations";
-import selectors from "./redux/phonebook/selectors";
+import routes from "./routes.js";
+import AppBar from "./components/AppBar";
+import PrivateRoute from "./components/PrivateRoute.js";
+import PublicRoute from "./components/PublickRoute";
+import authOperations from "./redux/auth/auth-operations.js";
+import Spinner from "react-bootstrap/Spinner";
+
+const HomeView = lazy(() => import("./views/HomeView"));
+const LoginView = lazy(() => import("./views/LoginView"));
+const RegisterView = lazy(() => import("./views/RegisterView"));
+const PhonebookView = lazy(() => import("./views/PhoneBookView"));
 
 class App extends Component {
   componentDidMount() {
-    this.props.fetchContact();
+    this.props.onGetCurrentUser();
   }
   render() {
-    const { contacts, filter } = this.props;
     return (
       <>
-        <section className="add-contact">
-          <h1 className="title">Phonebook</h1>
-          <ContactForm />
-        </section>
-        <section className="contacts">
-          <h2 className="title">Contacts</h2>
-          {contacts.length > 2 || filter.length > 0 ? <Filter /> : null}
-          <ContactList />
-        </section>
+        <AppBar />
+        <Suspense
+          fallback={
+            <>
+              <Spinner animation="grow" variant="info" />
+              <Spinner animation="grow" variant="info" />
+              <Spinner animation="grow" variant="info" />
+            </>
+          }
+        >
+          <Switch>
+            <PublicRoute
+              exact
+              path={routes.home}
+              restricted
+              component={HomeView}
+              redirectTo={routes.contacts}
+            />
+            <PublicRoute
+              path={routes.register}
+              restricted
+              redirectTo={routes.login}
+              component={RegisterView}
+            />
+            <PublicRoute
+              path={routes.login}
+              restricted
+              redirectTo={routes.contacts}
+              component={LoginView}
+            />
+            <PrivateRoute
+              path={routes.contacts}
+              component={PhonebookView}
+              redirectTo={routes.login}
+            />
+          </Switch>
+        </Suspense>
       </>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    contacts: selectors.getContacts(state),
-    filter: selectors.getFilter(state),
-  };
+const mapDispatchToProps = {
+  onGetCurrentUser: authOperations.getCurrentUser,
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchContact: () => dispatch(fetchContact()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

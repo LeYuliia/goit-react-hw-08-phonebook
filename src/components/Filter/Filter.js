@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { changeFilter } from "../../redux/phonebook/actions";
+import PT from "prop-types";
+import { changeFilter } from "../../redux/phonebook/phonebook-actions";
 //Styles:
 import "./Filter.scss";
 import { InputGroup, FormControl } from "react-bootstrap";
-import selectors from "../../redux/phonebook/selectors";
+import selectors from "../../redux/phonebook/phonebook-selectors";
 
 const Filter = ({ filter, onChange }) => (
   <InputGroup size="sm" className="filter-wrapp">
@@ -22,5 +23,11 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onChange: (e) => dispatch(changeFilter(e.target.value)),
 });
+
+Filter.propTypes = {
+  filter: PT.string,
+  onChange: PT.func.isRequired,
+  value: PT.string.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Filter);
